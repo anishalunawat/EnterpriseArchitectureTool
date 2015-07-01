@@ -1,0 +1,112 @@
+package com.iiitb.SE.DAO;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.neo4j.graphdb.DynamicLabel;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ResourceIterable;
+import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Result;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.helpers.collection.IteratorUtil;
+
+public class Neo4jDBConn {
+	
+	private static enum RelTypes implements RelationshipType
+	{
+		    IS_A,
+		    HAS_ACCESS,
+		    HAS_PRIVILEGES
+	}	
+	public GraphDatabaseService getConnection() {
+	
+		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
+		GraphDatabaseService db= dbFactory.newEmbeddedDatabase("C:\\Neo4jDB");
+		return db;
+	}
+	@SuppressWarnings("deprecation")
+	public void addUsers(GraphDatabaseService db, String firstName, String lastName, String userID, String email, String password, String roleName){
+
+		try (Transaction tx = db.beginTx()){
+			//creating new user node
+			Node user = db.createNode();
+			
+			Label userLabel = DynamicLabel.label("user");
+			
+			user.addLabel(userLabel);
+			user.setProperty("FirstName", firstName);
+			user.setProperty("LastName", lastName);
+			user.setProperty("UserID", userID);
+			user.setProperty("Email", email);
+			user.setProperty("Password", password);
+			user.setProperty("RoleName", roleName);
+			
+			// finding admin and making admin point to user
+			
+			@SuppressWarnings("deprecation")
+			Iterable<Node> allNodes = db.getAllNodes();
+			Iterator<Node> itr = allNodes.iterator();
+			Node n = null;
+			while (itr.hasNext()) {
+			    n = itr.next();
+			    if(n.hasLabel(DynamicLabel.label("admin"))) 
+			    	break;
+			}
+			
+			n.createRelationshipTo(user, RelTypes.HAS_PRIVILEGES);
+			
+			//depending upon role user node is connected to role node.
+			allNodes = db.getAllNodes();
+			itr = allNodes.iterator();
+			n = null;
+			while (itr.hasNext()) {
+			    n = itr.next();
+			    if(n.hasLabel(DynamicLabel.label("role")))
+			    {
+			    	if(n.getProperty("RoleName").equals(roleName)) 
+			    		break;
+			    }
+			}
+			
+			user.createRelationshipTo(n, RelTypes.IS_A);
+			tx.success();
+		}
+		System.out.println("Done successfully");
+	}
+	@SuppressWarnings("deprecation")
+	public String isValidated(GraphDatabaseService db, String userID, String password){
+		// TODO Auto-generated method stub
+		try (Transaction tx = db.beginTx()){
+			
+			Iterable<Node> allNodes = db.getAllNodes();
+			Iterator<Node> itr = allNodes.iterator();
+			Node n = null;
+			while (itr.hasNext()){
+			    n = itr.next();
+			    if(n.hasLabel(DynamicLabel.label("user")))
+			    { 
+			    	if(n.getProperty("UserID").equals(userID) && n.getProperty("Password").equals(password))
+			    		return n.getProperty("RoleName").toString();
+			    }
+			}
+		}
+		return "hello";
+	}
+	public String getRoleName(GraphDatabaseService db) {
+		// TODO Auto-generated method stub
+		try (Transaction tx = db.beginTx()){
+			
+			
+		
+		}
+		return null;
+	}
+}

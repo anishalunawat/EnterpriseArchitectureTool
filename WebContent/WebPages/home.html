@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+	<title></title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="stylesheet" href="css/supersized.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="theme/supersized.shutter.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="theme/supersized.shutter.css" type="text/css" media="screen" />
+
+	
+	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" />
+	
+	<script src="js/jquery.min.js"></script>
+  	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easing.min.js"></script>
+	
+	<script type="text/javascript" src="js/supersized.3.2.7.min.js"></script>
+	<script type="text/javascript" src="theme/supersized.shutter.min.js"></script>
+	
+	
+	<script type="text/javascript">
+	var xmlHttp;		
+	jQuery(function($){
+		
+		$.supersized({
+		
+			// Functionality
+			slide_interval          :   3000,		// Length between transitions
+			transition              :   1, 			// 0-None, 1-Fade, 2-Slide Top, 3-Slide Right, 4-Slide Bottom, 5-Slide Left, 6-Carousel Right, 7-Carousel Left
+			transition_speed		:	500,		// Speed of transition
+													   
+			// Components							
+			slide_links				:	'blank',	// Individual links for each slide (Options: false, 'num', 'name', 'blank')
+			slides 					:  	[			// Slideshow Images
+												{image : 'images/business01.jpg'},
+												{image : 'images/business02.jpg'},  
+												{image : 'images/business03.jpg'},
+												{image : 'images/business04.jpg'},
+										]
+			
+		});
+	   });
+		    
+	function checkForm(form)
+	  {
+	    if(this.pwd.value == "" || this.pwd.indexOf("@") == -1|| this.pwd.indexOf("$") == -1 || this.pwd.indexOf("#") == -1)
+	    {
+  		alert("Password must contain special characters like @,#,$,&,*,%");
+  		this.name.focus();
+  		return false;
+	    }
+	    if(this.pwd.value != this.confirmpwd.value)
+	    {
+	    	alert('Password Mismatch');
+	    	return false;	
+	    }
+	    return false;
+	  }
+
+		function isValidID(){
+		
+			var userid = document.getElementById("userid");
+			if (window.XMLHttpRequest){
+				xmlHttp = new XMLHttpRequest();
+			}
+			else{
+				xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			var url = "CreateAccount?userid= "+userid.value;
+			xmlHttp.open("GET", url, true);
+			xmlHttp.onreadystatechange = managestatechange;
+			xmlHttp.send();
+		}
+			
+		function managestatechange() {
+		
+			if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
+				var textMessage = xmlHttp.responseText;
+				
+				if(textMessage == "true"){
+					var color = "CC0000";
+					var validationMessage=document.getElementById("validationMessage");
+					validationMessage.innerHTML = "<font color="+color+">Already Exists!t</font>";
+				}	
+				else
+				{
+					var color = "00FF00";
+					var validationMessage=document.getElementById("validationMessage");
+					validationMessage.innerHTML = "<font color="+color+">Correct</font>";
+				}
+			}
+		}
+		function getValue(){
+			
+			var e = document.getElementById("dropdown");
+			var val = e.options[e.selectedIndex].text;
+			alert(val);
+			return val;
+		}
+	</script>
+	
+</head>
+<body>
+
+<div class="bannerContainer">
+    <nav class="navbar">
+      <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand">Enterprise Architecture Tools</a>
+    </div>    
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li class= "active" class = "btn btn-primary"><a href="#">Home</a></li>
+        <li><a href="#" class = "btn btn-primary">Tools</a></li>
+		<li><a href="#" class = "btn btn-primary">AboutUs</a></li>
+		
+        <li><a href="#" class = "btn btn-primary" data-toggle="modal" data-target="#myModal" aria-labelledby="myModal" aria-hidden="true">Login</a></li>
+        <li><a href="#" class = "btn btn-primary" data-toggle = "modal" data-target="#signupModal" aria-labelledby="signupModal" aria-hidden="true">SignUp</a></li>
+      </ul>
+      
+  </div>
+ </nav>
+    
+	<div id = "slideshow">
+		<a id="prevslide" class="load-item"></a>
+		<a id="nextslide" class="load-item"></a>
+		
+		<div id="progress-back" class="load-item">
+			<div id="progress-bar"></div>
+		</div>
+	</div>	
+</div>	
+ 
+<!-- Login Modal -->
+<div id="myModal" class="modal fade" role="dialog" >
+  <div class="modal-dialog modal-sm">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Login</h4>
+      </div>
+      	<form role = "form" method = "post" action = "LoginValidator">
+      	
+      		<div class="modal-body">
+       
+			  <div class="form-group">
+			    <label for="userid">User ID:</label>
+			    <input type="text" required class="form-control" id="u_id" name = "u_id">
+			  </div>
+			  <div class="form-group">
+			    <label for="pwd">Password:</label>
+			    <input type="password" class="form-control" id="pwd" name = "pwd" required>
+			  </div>
+			  <div class="checkbox">
+			    <label><input type="checkbox" required> Remember me</label>
+			  </div>
+      	  </div>
+	      <div class="modal-footer">
+	        <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+	      </div>
+     </form>
+    </div>
+
+  </div>
+</div>
+
+
+
+     
+<!-- Login modal end -->  
+
+<div id="signupModal" class="modal fade" role="dialog" >
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">SignUp</h4>
+      </div>
+      	<form role = "form" method = "post" action = "CreateAccount" onsubmit = "return checkForm(this);">
+      	
+      		<div class="signupModal-body">
+       
+			  <div class="form-group" style = "width:300px">
+			  	<label for="fname">First Name:</label>
+			  	 <input type="text" class="form-control" id="fname" name = "fname" required>
+			  </div>
+			  
+			   <div class="form-group" style = "width:300px; margin-left:350px;margin-top:-74px">
+			  	<label for="lname">Last Name:</label>
+			  	 <input type="text" class="form-control" id="lname" name="lname">
+			  </div>
+			  
+			  <div class="form-group" style = "width:300px">	 
+			    <label for="userid">User ID:</label>
+			    <input type="text" required class="form-control" id="userid" name = "userid" onchange="isValidID()">
+			  </div>
+			 
+			  <div id = "validationMessage" style = "width:50px; color:red"></div>
+			  
+			  <div class="form-group" style = "width:300px; margin-left:350px;margin-top:-74px">	 
+			    <label for="email">Email address:</label>
+			    <input type="email" required class="form-control" id="email" name="email" onchange="if(this.value != '') callAjax('checkEmail', this.value, this.id);">
+			  </div>
+			  
+			  <div class="form-group" style = "width:300px">
+			    <label for="pwd">Password:</label>
+			    <div id = "passwrd"><input type="password" class="form-control" id="pwd" name="pwd" required></div>
+			  </div>
+			  
+			  <div class="form-group" style = "width:300px; margin-left:350px;margin-top:-74px">
+			    <label for="cpwd">Confirm Password:</label>
+			    <div id = "cpasswrd"><input type="password" class="form-control" id="confirmpwd" required></div>
+			  </div>
+			  
+			  <div class="form-group" style = "width:300px">
+				<label for="roles">Role Type:</label>
+				<select class = "form-control" name="dropdown1">
+					<option value="one">-------------   Select Role   ------------------</option>
+					<option value="Planner">Planner</option>
+					<option value="Owner">Owner</option>
+					<option value="Designer">Designer</option>
+					<option value="Builder">Builder</option>
+					<option value="Programmer">Programmer</option>
+					<option value="User">User</option>
+					
+				</select>
+			  </div>
+			   
+			  <div class="checkbox">
+			    <label><input type="checkbox" required> Remember me</label>
+			  </div>
+      	  </div>
+	      <div class="modal-footer">
+	        <button type="submit" class="btn btn-primary btn-lg btn-block"><div class = "chk">SignUp</div></button>
+	      </div>
+     </form>
+    </div>
+
+  </div>
+</div>
+
+
+</body>
+</html>
